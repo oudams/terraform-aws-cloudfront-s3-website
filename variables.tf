@@ -32,3 +32,8 @@ variable "upload_sample_file" {
   default     = false
   description = "Upload sample html file to s3 bucket"
 }
+
+variable "lambda_function_association" {
+  default     = {}
+  description = "config for CloudFront's lambda association"
+}

@@ -1,4 +1,6 @@
 # terraform-aws-cloudfront-s3-website
+Forked from "chgangaraju/cloudfront-s3-website/aws", to add more parameters such as CloudFront `lambda_function_association`
+
 Terraform module for creating a s3 static website with cloudfront distribution
 
 The following resources will be created
@@ -20,7 +22,7 @@ Prerequisites (Optional in example2):
     }
 
     module "cloudfront_s3_website_with_domain" {
-        source                 = "chgangaraju/cloudfront-s3-website/aws"
+        source                 = "oudams/cloudfront-s3-website/aws"
         version                = "1.2.2"
         hosted_zone            = "example.com" 
         domain_name            = "test.abc.example.com"
@@ -31,10 +33,29 @@ Prerequisites (Optional in example2):
 ### Example 2
 
     module "cloudfront_s3_website_without_domain" {
-        source                 = "chgangaraju/cloudfront-s3-website/aws"
+        source                 = "oudams/cloudfront-s3-website/aws"
         version                = "1.2.2"
         domain_name            = "test-application-1232" // Any random identifier for s3 bucket name
         use_default_domain     = true
         upload_sample_file     = true
     }
-    
+
+### Example 3
+
+    provider "aws" {
+      region = "us-east-1"
+    }
+
+    module "cloudfront_s3_with_lambda_function_association" {
+        source                 = "oudams/cloudfront-s3-website/aws"
+        version                = "1.2.2"
+        hosted_zone            = "example.com" 
+        domain_name            = "test.abc.example.com"
+        acm_certificate_domain = "*.abc.example.com"
+
+        lambda_function_association = {
+            event_type : "origin-request"
+            include_body : false
+            lambda_arn : <lambda-arn:version>
+        }
+    }

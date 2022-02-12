@@ -67,7 +67,7 @@ data "aws_route53_zone" "domain_name" {
 }
 
 resource "aws_route53_record" "route53_record" {
-  count = var.use_default_domain ? 0 : 1
+  count      = var.use_default_domain ? 0 : 1
   depends_on = [
     aws_cloudfront_distribution.s3_distribution
   ]
@@ -130,6 +130,16 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     min_ttl                = 0
     default_ttl            = 86400
     max_ttl                = 31536000
+
+    dynamic "lambda_function_association" {
+      for_each = var.lambda_function_association == {} ? {} : { key : "value" }
+
+      content {
+        event_type   = var.lambda_function_association.event_type
+        include_body = var.lambda_function_association.include_body
+        lambda_arn   = var.lambda_function_association.lambda_arn
+      }
+    }
   }
 
   price_class = var.price_class
